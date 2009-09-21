@@ -20,16 +20,26 @@ class BaseMpttCommentNode(BaseCommentNode):
             ctype, object_pk = self.get_target_ctype_pk(context)
             self.root_node = self.comment_model.objects.get_root_comment(ctype, object_pk)
         return self.root_node
-        
+objects = {}
+
 class MpttCommentFormNode(BaseMpttCommentNode):
+   
+    global objects
+   
     """Insert a form for the comment model into the context."""
-            
+           
     def get_form(self, context):
         ctype, object_pk = self.get_target_ctype_pk(context)
-        if object_pk:
-            return mptt_comments.get_form()(ctype.get_object_for_this_type(pk=object_pk), parent_comment=self.get_root_node(context))
+       
+        key = str(ctype)+'_'+str(object_pk)
+       
+        if objects.has_key(key):
+            return mptt_comments.get_form()(objects[key], parent_comment=self.get_root_node(context))
+        elif object_pk:
+            objects[key] = ctype.get_object_for_this_type(pk=object_pk)
+            return mptt_comments.get_form()(objects[key], parent_comment=self.get_root_node(context))
         else:
-            return None
+            return None        
 
     def render(self, context):
         context[self.as_varname] = self.get_form(context)
@@ -37,15 +47,23 @@ class MpttCommentFormNode(BaseMpttCommentNode):
 
 class MpttCommentListNode(BaseMpttCommentNode):
 
-    offset = getattr(settings, 'DEFAULT_COMMENT_OFFSET', 20)
+    offset = getattr(settings, 'MPTT_COMMENTS_OFFSET', 20)
     
-    cutoff_level = 3
+    cutoff_level = getattr(settings, 'MPTT_COMMENTS_CUTOFF', 3)
     bottom_level = 0 
     
     def get_query_set(self, context):
+
+        related = getattr(settings, 'MPTT_COMMENTS_SELECT_RELATED', None)
+
         qs = super(MpttCommentListNode, self).get_query_set(context)
         root_node = self.get_root_node(context)
-        return qs.filter(tree_id=root_node.tree_id, level__gte=1, level__lte=self.cutoff_level).order_by('tree_id', 'lft').select_related('user')
+        qs = qs.filter(tree_id=root_node.tree_id, level__gte=1, level__lte=self.cutoff_level).order_by('tree_id', 'lft')
+
+        if related:
+            qs = qs.select_related(*related)
+
+        return qs
         
     def get_context_value_from_queryset(self, context, qs):
         return list(qs[:self.offset])

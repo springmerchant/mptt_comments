@@ -222,7 +222,7 @@ def comment_tree_json(request, object_list, tree_id, cutoff_level, bottom_level)
 
 def comments_more(request, from_comment_pk):
     
-    offset = getattr(settings, 'DEFAULT_COMMENT_OFFSET', 25)
+    offset = getattr(settings, 'MPTT_COMMENTS_OFFSET', 25)
 
     comment = MpttComment.objects.select_related('content_type').get(pk=from_comment_pk)
 
@@ -276,16 +276,21 @@ def comments_subtree(request, from_comment_pk, include_self=None, include_ancest
     
     comment = MpttComment.objects.select_related('content_type').get(pk=from_comment_pk)     
     
-    cutoff_level = comment.level + 3
+    cutoff_level = comment.level + getattr(settings, 'MPTT_COMMENTS_CUTOFF', 3)
     bottom_level = not include_ancestors and (comment.level - (include_self and 1 or 0)) or 0
-    
+   
+    related = getattr(settings, 'MPTT_COMMENTS_SELECT_RELATED', None)
+
     qs = MpttComment.objects.filter(
         tree_id=comment.tree_id, 
         lft__gte=comment.lft + (not include_self and 1 or 0),
         lft__lte=comment.rght,
         level__lte=cutoff_level - (include_self and 1 or 0)
-    ).order_by('tree_id', 'lft').select_related('user')
-    
+    ).order_by('tree_id', 'lft')
+
+    if related:
+	qs = qs.select_related(*related)
+	    
     is_ajax = request.GET.get('is_ajax') and '_ajax' or ''
     
     if is_ajax:    
