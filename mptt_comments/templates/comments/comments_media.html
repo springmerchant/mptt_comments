@@ -72,7 +72,7 @@ $(document).ready(function () {
             form.bind("submit", function () {
                 var dataDict = $(":input", form).serializeArray();
                 $.each(dataDict, function () {
-                    dataDict[this.name] = this.value;
+                    postData[this.name] = this.value;
                 });
 
                 postData['is_ajax'] = 1;
