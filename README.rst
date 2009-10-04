@@ -15,7 +15,7 @@ Installation
 
 #. Get Mptt Comments
 
-    hg clone http://bitbucket.org/fivethreeo/django-mptt-comments/
+    git clone git://github.com/thoas/django-mptt-comments.git
     
 #. Add the `mptt_comments` directory to your Python path.
 
@@ -81,3 +81,4 @@ TODO
 Contributors
 ============
 Михаил Сычёв (Mike)
+Florent Messa (thoas)
