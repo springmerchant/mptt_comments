@@ -1,4 +1,5 @@
 import textwrap
+
 from django import http
 from django.conf import settings
 from django.contrib.comments.views.utils import next_redirect
@@ -8,11 +9,11 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.html import escape
-import mptt_comments
 from django.contrib.comments import signals
-from mptt_comments.models import MpttComment
 from django.utils import datastructures, simplejson
 
+from mptt_comments.models import MpttComment
+from mptt_comments.forms import MpttCommentForm
 
 class CommentPostBadRequest(http.HttpResponseBadRequest):
     """
@@ -38,7 +39,7 @@ def new_comment(request, comment_id=None):
     model = target.__class__
     
     # Construct the initial comment form
-    form = mptt_comments.get_form()(target, parent_comment=parent_comment)
+    form = MpttCommentForm(target, parent_comment=parent_comment)
         
     template_list = [
         "comments/%s_%s_new_form%s.html" % tuple(str(model._meta).split(".") + [is_ajax]),
@@ -108,7 +109,7 @@ def post_comment(request, next=None):
               data.get("preview", None) is not None
         
     # Construct the comment form 
-    form = mptt_comments.get_form()(target, parent_comment=parent_comment, data=data)
+    form = MpttCommentForm(target, parent_comment=parent_comment, data=data)
             
     # Check security information
     if form.security_errors():
@@ -169,7 +170,7 @@ def confirmation_view(template, doc="Display a confirmation view."):
         comment = None
         if 'c' in request.GET:
             try:
-                comment = mptt_comments.get_model().objects.get(pk=request.GET['c'])
+                comment = MpttComment.objects.get(pk=request.GET['c'])
             except ObjectDoesNotExist:
                 pass
         return render_to_response(template,

@@ -1,9 +1,14 @@
+import re
+
 from django.contrib.comments.templatetags.comments import BaseCommentNode, CommentListNode
 from django import template
 from django.conf import settings
 from django.template.loader import render_to_string
+from django.core import urlresolvers
 from django.utils.safestring import mark_safe
-import mptt_comments
+
+from mptt_comments.models import MpttComment
+from mptt_comments.forms import MpttCommentForm
 
 register = template.Library()
 
@@ -13,7 +18,7 @@ class BaseMpttCommentNode(BaseCommentNode):
     
     def __init__(self, ctype=None, object_pk_expr=None, object_expr=None, as_varname=None, comment=None):
         super(BaseMpttCommentNode, self). __init__(ctype=ctype, object_pk_expr=object_pk_expr, object_expr=object_expr, as_varname=as_varname, comment=comment)
-        self.comment_model = mptt_comments.get_model()
+        self.comment_model = MpttComment
     
     def get_root_node(self, context):
         if not self.root_node:
@@ -34,10 +39,10 @@ class MpttCommentFormNode(BaseMpttCommentNode):
         key = str(ctype)+'_'+str(object_pk)
        
         if objects.has_key(key):
-            return mptt_comments.get_form()(objects[key], parent_comment=self.get_root_node(context))
+            return MpttCommentForm(objects[key], parent_comment=self.get_root_node(context))
         elif object_pk:
             objects[key] = ctype.get_object_for_this_type(pk=object_pk)
-            return mptt_comments.get_form()(objects[key], parent_comment=self.get_root_node(context))
+            return MpttCommentForm(objects[key], parent_comment=self.get_root_node(context))
         else:
             return None        
 
@@ -121,7 +126,7 @@ def mptt_comment_form_target():
 
         <form action="{% comment_form_target %}" method="POST">
     """
-    return mptt_comments.get_form_target()
+    return urlresolvers.reverse("mptt_comments.views.post_comment")
 
 def children_count(comment):
     return (comment.rght - comment.lft) / 2
@@ -145,10 +150,46 @@ def display_comment_toplevel_for(target):
         } 
         # RequestContext(context['request'], {})
     )
+
+class LatestMpttComments(template.Node):
+    def __init__(self, limit, var_name):
+        self.limit = limit
+        self.var_name = var_name
+
+    def render(self, context):
+        comments = MpttComment.objects.published()[:int(self.limit)]
+        if comments and (int(self.limit) == 1):
+            context[self.var_name] = comments[0]
+        else:
+            context[self.var_name] = comments
+        return ''
+
+def get_latest_comments(parser, token):
+    """
+    Gets any number of latest comments and stores them in a varable.
+
+    Syntax::
+
+        {% get_latest_comments [limit] as [var_name] %}
+
+    Example usage::
+
+        {% get_latest_comments 10 as latest_comment_list %}
+    """
+    try:
+        tag_name, arg = token.contents.split(None, 1)
+    except ValueError:
+        raise template.TemplateSyntaxError, "%s tag requires arguments" % token.contents.split()[0]
+    m = re.search(r'(.*?) as (\w+)', arg)
+    if not m:
+        raise template.TemplateSyntaxError, "%s tag had invalid arguments" % tag_name
+    format_string, var_name = m.groups()
+    return LatestMpttComments(format_string, var_name)
     
 register.filter(children_count)
 register.tag(get_mptt_comment_form)
 register.simple_tag(mptt_comment_form_target)
 register.simple_tag(mptt_comments_media)
 register.tag(get_mptt_comment_list)
+register.tag(get_latest_comments)
 register.simple_tag(display_comment_toplevel_for)
