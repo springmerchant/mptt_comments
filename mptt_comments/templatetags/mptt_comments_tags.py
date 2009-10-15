@@ -83,7 +83,32 @@ class MpttCommentListNode(BaseMpttCommentNode):
         context['cutoff_level'] = self.cutoff_level
         context['bottom_level'] = self.bottom_level
         return ''        
-        
+
+class MpttCommentCountNode(BaseMpttCommentNode):
+    """Insert a count of comments into the context."""
+    def get_context_value_from_queryset(self, context, qs):
+        return qs.filter(level__gt=0).count()
+
+def get_mptt_comment_count(parser, token):
+    """
+    Gets the comment count for the given params and populates the template
+    context with a variable containing that value, whose name is defined by the
+    'as' clause.
+
+    Syntax::
+
+        {% get_mptt_comment_count for [object] as [varname]  %}
+        {% get_mptt_comment_count for [app].[model] [object_id] as [varname]  %}
+
+    Example usage::
+
+        {% get_mptt_comment_count for event as comment_count %}
+        {% get_mptt_comment_count for calendar.event event.id as comment_count %}
+        {% get_mptt_comment_count for calendar.event 17 as comment_count %}
+
+    """
+    return MpttCommentCountNode.handle_token(parser, token)
+
 def get_mptt_comment_list(parser, token):
     """
     Gets the list of comments for the given params and populates the template
@@ -192,4 +217,5 @@ register.simple_tag(mptt_comment_form_target)
 register.simple_tag(mptt_comments_media)
 register.tag(get_mptt_comment_list)
 register.tag(get_latest_comments)
+register.tag(get_mptt_comment_count)
 register.simple_tag(display_comment_toplevel_for)

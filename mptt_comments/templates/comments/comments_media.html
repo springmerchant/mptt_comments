@@ -10,7 +10,6 @@ $(document).ready(function () {
             this.commentPk = new RegExp("comment_(\\d+)", "");
             this.posted = new RegExp("this_is_a_comment", "g");
             
-            var _this = this;
             $('#comments_more').bind("click", function () {
                 $.get($(this).attr('href') + '?is_ajax=1', {}, function (data, textStatus) {
                     var commentsForUpdate = data.comments_for_update;
@@ -36,7 +35,7 @@ $(document).ready(function () {
                             'href', 
                             _href.replace(
                                 new RegExp("\\d+/$"), 
-                                parseInt(_this.commentPk.exec(
+                                parseInt(MpttComment.commentPk.exec(
                                     $(commentsLoaded[commentsLoaded.length - 1])
                                     .attr('id'))[1]) + '/'
                                 )
@@ -46,7 +45,7 @@ $(document).ready(function () {
                             .parent()
                             .hide();
                     }
-                    _this.replies();
+                    MpttComment.replies();
                 },
                 "json");
                 return false;
@@ -55,14 +54,13 @@ $(document).ready(function () {
             $('.new_comment_form_wrapper').each(function () {
                 var nxt = $(this);
                 var frm = $('form', nxt);
-                _this.submit(frm, nxt);
+                MpttComment.submit(frm, nxt);
             });
             
             this.replies();
         },
         
         submit: function (form, nxt) {
-            var _this = this;
             var postData = {}
             $("input[type=submit]", form).bind("mousedown", function () {
                 postData = {};
@@ -77,20 +75,20 @@ $(document).ready(function () {
 
                 postData['is_ajax'] = 1;
                 $.post(form.attr("action"), postData, function (data, textStatus) {
-                    if (_this.posted.test(data)) {
+                    if (MpttComment.posted.test(data)) {
                         if (nxt.hasClass('new_comment_form_wrapper')) {
                             $('#mptt-comments-tree').append(data);
                             nxt.replaceWith('<p>{% trans "Your comment was posted." %}</p>');
                         } else {
                             nxt.replaceWith(data);
-                            _this.replies();
+                            MpttComment.replies();
                         }
                     } else {
                         nxt.empty();
                         nxt.append(data);
                         nxt.slideDown("slow");
                         var newForm = $("form", nxt);
-                        _this.submit(newForm, nxt);
+                        MpttComment.submit(newForm, nxt);
                     }
                 }, "html");
                 return false;
@@ -98,7 +96,6 @@ $(document).ready(function () {
         },
         
         replies: function () {
-            var _this = this;
             $('.comment_reply, .comment_new').each(function () {
                  var replyLink = $(this);
                  var parent = replyLink.parent('p');
@@ -111,7 +108,7 @@ $(document).ready(function () {
                          nxt.append(data);
                          nxt.slideDown("slow");
                          var form = $("form", nxt);
-                         _this.submit(form, nxt);
+                         MpttComment.submit(form, nxt);
                      }, "html");
                      return false;
                  });
@@ -123,7 +120,7 @@ $(document).ready(function () {
                      .unbind('click')
                      .bind('click', function (e) {
                          var href = $(this).attr('href') + '?is_ajax=1';
-                         if ($.inArray(href, _this.repliesLoaded) == -1) {
+                         if ($.inArray(href, MpttComment.repliesLoaded) == -1) {
                              $.get(href, {}, function (data, textStatus) {
                                  var commentsTree = data.comments_tree;
                                  if (commentsTree) {
@@ -131,8 +128,8 @@ $(document).ready(function () {
                                          .parents('div.comment:first')
                                          .append(commentsTree.html);
                                  }
-                                 _this.repliesLoaded.push($(this).get(0).url);
-                                 _this.replies();
+                                 MpttComment.repliesLoaded.push($(this).get(0).url);
+                                 MpttComment.replies();
                              }, "json");
                          }
                          return false;
