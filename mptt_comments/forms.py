@@ -9,7 +9,7 @@ import time
 import datetime
 
 class MpttCommentForm(CommentForm):
-    title = forms.CharField()
+    title = forms.CharField(max_length=255)
     parent_pk = forms.IntegerField(widget=forms.HiddenInput, required=False)
     
     def __init__(self, target_object, parent_comment=None, data=None, initial=None):
