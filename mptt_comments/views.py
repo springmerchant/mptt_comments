@@ -158,6 +158,9 @@ def post_comment(request, next=None):
         comment = comment,
         request = request
     )
+
+    if is_ajax:
+        data['next'] = None
     
     return next_redirect(data, next, 'comments_comment_done%s' % (is_ajax and '_ajax' or ''), c=comment._get_pk_val())
     
