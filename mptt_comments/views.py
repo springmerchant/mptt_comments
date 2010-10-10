@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib.comments.views.utils import next_redirect
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.html import escape
@@ -34,7 +34,7 @@ def new_comment(request, comment_id=None):
     if not comment_id:
         return CommentPostBadRequest("Missing comment id.")
 
-    parent_comment = MpttComment.objects.get(pk=comment_id)
+    parent_comment = get_object_or_404(MpttComment, pk=comment_id)
 
     target = parent_comment.content_object
     model = target.__class__
@@ -229,7 +229,10 @@ def comments_more(request, from_comment_pk):
 
     offset = getattr(settings, 'MPTT_COMMENTS_OFFSET', 25)
 
-    comment = MpttComment.objects.select_related('content_type').get(pk=from_comment_pk)
+    try:
+        comment = MpttComment.objects.select_related('content_type').get(pk=from_comment_pk)
+    except MpttComment.DoesNotExist:
+        raise Http404
 
     cutoff_level = 3
     bottom_level = 0
