@@ -3,13 +3,16 @@ from django.conf import settings
 from django.contrib.comments.forms import CommentForm
 from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
-from mptt_comments.models import MpttComment
 from django import forms
+from django.utils.translation import ungettext, ugettext_lazy as _
+
 import time
 import datetime
 
+from mptt_comments.models import MpttComment
+
 class MpttCommentForm(CommentForm):
-    title = forms.CharField(max_length=255)
+    title = forms.CharField(max_length=255, label=_('Title'))
     parent_pk = forms.IntegerField(widget=forms.HiddenInput, required=False)
     
     def __init__(self, target_object, parent_comment=None, data=None, initial=None):
