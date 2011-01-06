@@ -23,7 +23,9 @@
 <p>
     {% with comments|last as last_comment %}
     <a id="comments_more" href="{% url comments_more last_comment.pk %}">
-        {% trans "Still" %} <span id="comments_more_remaining">{{ comments_remaining }}</span> {% trans "comments left" %}
+        {% blocktrans with comments_remaining as remaining %}
+        Still <span id="comments_more_remaining">{{ remaining }}</span> comments left
+        {% endblocktrans %}
     </a>
     {% endwith %}
 </p>

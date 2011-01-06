@@ -1,0 +1,108 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-01-06 14:41+0100\n"
+"PO-Revision-Date: 2011-01-06 20:00+0100\n"
+"Last-Translator: Florent Messa <florent.messa@gmail.com>\n"
+"Language-Team: French <http://django-fr.org, http://apluggedinlife.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: admin.py:11
+msgid "Content"
+msgstr "Contenido"
+
+#: admin.py:14
+msgid "Metadata"
+msgstr "Metadatos"
+
+#: forms.py:15
+msgid "Title"
+msgstr "Título"
+
+#: templates/comments/comments_media.html:81
+msgid "Your comment was posted."
+msgstr "Se ha registrado tu comentario."
+
+#: templates/comments/display_comment.html:10
+#: templates/comments/display_comments_tree.html:16
+msgid "Commented by"
+msgstr "Comentado por"
+
+#: templates/comments/display_comment.html:13
+#: templates/comments/display_comments_tree.html:19
+msgid "at"
+msgstr "a las"
+
+#: templates/comments/display_comment.html:21
+#: templates/comments/display_comments_tree.html:27
+msgid "hidden replies"
+msgstr "respuestas escondidas"
+
+#: templates/comments/display_comment.html:24
+#: templates/comments/display_comments_tree.html:30
+msgid "replies"
+msgstr "respuestas"
+
+#: templates/comments/display_comment.html:27
+#: templates/comments/display_comments_toplevel.html:35
+#: templates/comments/display_comments_tree.html:33
+msgid "Post a new comment"
+msgstr "Deja un nuevo comentario"
+
+#: templates/comments/display_comment.html:30
+#: templates/comments/display_comments_tree.html:36
+msgid "Reply to this comment"
+msgstr "Responder a este comentario"
+
+#: templates/comments/display_comments_toplevel.html:8
+#: templates/comments/subtree.html:14
+msgid "Comments"
+msgstr "Comentarios"
+
+#: templates/comments/display_comments_toplevel.html:26
+#, python-format
+msgid ""
+"\n"
+"        Still <span id=\"comments_more_remaining\">%(remaining)s</span> "
+"comments left\n"
+"        "
+msgstr ""
+"\n"
+"        Todavía hay<span id=\"comments_more_remaining\">%(remaining)s</span> "
+"comentarios\n"
+"        "
+
+#: templates/comments/form.html:25 templates/comments/preview.html:36
+msgid "Post"
+msgstr "Enviar"
+
+#: templates/comments/form.html:27 templates/comments/preview.html:37
+msgid "Preview"
+msgstr "Previsualizar"
+
+#: templates/comments/posted.html:7
+msgid "Thanks for your comment"
+msgstr "Gracias por haber comentado"
+
+#: templates/comments/posted.html:8
+msgid "Back to the page you commented on"
+msgstr "Volver a la página donde has comentado"
+
+#: templates/comments/preview.html:8
+msgid "Preview of your comment"
+msgstr "Previsualiza tu comentario"
+
+#: templates/comments/preview_ajax.html:3
+msgid "Comment preview"
+msgstr "Previsualización del comentario"
