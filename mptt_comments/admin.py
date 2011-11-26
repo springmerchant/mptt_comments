@@ -22,4 +22,8 @@ class MpttCommentsAdmin(admin.ModelAdmin):
     ordering = ('-submit_date',)
     search_fields = ('comment', 'user__username', 'user_name', 'user_email', 'user_url', 'ip_address')
 
+try:
+	admin.site.unregister(Comment)
+except:
+	pass
 admin.site.register(MpttComment, MpttCommentsAdmin)

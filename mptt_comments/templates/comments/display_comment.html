@@ -1,4 +1,4 @@
-{% load markup i18n mptt_tags mptt_comments_tags comparison %}
+{% load i18n mptt_tags mptt_comments_tags comparison %}
 
 <div class="comment comment_level_{{ comment.level }}
         {% if_greater comment.level collapse_levels_above %} comment_collapsed{% endif_greater %}
@@ -13,7 +13,7 @@
             {% trans "at" %} <span class="commented_time">{{ comment.submit_date|date:"H:i" }}<span> 
         </p>
     
-        {{ comment.comment|markdown }}
+        {{ comment.comment }}
 
         <p>
             {% if comment|children_count %}{% ifequal comment.level cutoff_level %}
