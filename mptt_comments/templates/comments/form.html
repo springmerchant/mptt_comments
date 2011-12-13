@@ -1,6 +1,6 @@
 {% load comments i18n %}
-
 <form action="{% comment_form_target %}" method="POST">
+{% csrf_token %}
     <fieldset>
         <ol>
         {% for field in form %}
@@ -29,3 +29,4 @@
         </ol>
     </fieldset>
 </form>
+testing

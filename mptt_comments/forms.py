@@ -21,9 +21,6 @@ class MpttCommentForm(CommentForm):
         
         self.fields.keyOrder = [
             'title',
-            'name',
-            'email',
-            'url',
             'comment',
             'honeypot',
             'content_type',
