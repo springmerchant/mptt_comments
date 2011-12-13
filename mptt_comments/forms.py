@@ -50,9 +50,9 @@ class MpttCommentForm(CommentForm):
         new = MpttComment(
             content_type = ContentType.objects.get_for_model(self.target_object),
             object_pk    = force_unicode(self.target_object._get_pk_val()),
-            user_name    = self.cleaned_data["name"],
-            user_email   = self.cleaned_data["email"],
-            user_url     = self.cleaned_data["url"],
+            user_name    = self.cleaned_data.get("name", None),
+            user_email   = self.cleaned_data.get("email", None),
+            user_url     = self.cleaned_data.get("url", None),
             comment      = self.cleaned_data["comment"],
             submit_date  = datetime.datetime.now(),
             site_id      = settings.SITE_ID,
