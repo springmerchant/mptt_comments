@@ -1,32 +1,35 @@
-{% load i18n mptt_tags mptt_comments_tags comparison markup %}
+{% load i18n mptt_tags mptt_comments_tags comparison markup clepsidra_tags %}
+
 
 <div class="comment comment_level_{{ comment.level }}
-        {% if_greater comment.level collapse_levels_above %} comment_collapsed{% endif_greater %}
-        " id="comment_{{ comment.pk }}">
-<!-- this_is_a_comment -->
-    <p class="comment_title"><a class="comment_expand" href="{% url comment_detail comment.pk %}">{{ comment.title }}</a>-
-        {{ comment.name }}
-        <span class="commented_day">{{ comment.submit_date|date:"l" }}</span>,
-        <span class="commented_date">{{ comment.submit_date|date:"j F" }}</span>
-        {% trans "at" %} <span class="commented_time">{{ comment.submit_date|date:"H:i" }}<span>
-    </p>
-    <div class="comment_content {% if_less comment.level collapse_levels_below %} comment_collapsed_below{% endif_less %}">
-        {{ comment.comment|markdown }}
+        {% if_greater comment.level collapse_levels_above %} comment_collapsed{% endif_greater %}" id="comment_{{ comment.pk }}">
 
-        <p>
-            {% if comment|children_count %}{% ifequal comment.level cutoff_level %}
-                <a class="comment_replies" href="{% url comments_subtree comment.pk %}">
-                    {{ comment|children_count }} {% trans "hidden replies" %}
-                </a>
-            {% else %}
-                {{ comment|children_count }} {% trans "replies" %}
-            {% endifequal %} |{% endif %}
-             <a class="comment_post_new" href="#post_new_comment">
-                {% trans "Post a new comment" %}
-            </a> |
-            <a class="comment_reply" href="{% url comment_reply comment.pk %}">
-                {% trans "Reply to this comment" %}
-            </a>
+    <div>{% show_gravatar comment.user.email %}</div>
+    <div class="comment">
+        <p class="comment_title"><a class="comment_expand" href="{% url comment_detail comment.pk %}">{{ comment.title }}</a>-
+            {{ comment.name }}
+            <span class="commented_day">{{ comment.submit_date|date:"l" }}</span>,
+            <span class="commented_date">{{ comment.submit_date|date:"j F" }}</span>
+            {% trans "at" %} <span class="commented_time">{{ comment.submit_date|date:"H:i" }}<span>
         </p>
+        <div class="comment_content {% if_less comment.level collapse_levels_below %} comment_collapsed_below{% endif_less %}">
+            {{ comment.comment|markdown }}
+
+            <p>
+                {% if comment|children_count %}{% ifequal comment.level cutoff_level %}
+                    <a class="comment_replies" href="{% url comments_subtree comment.pk %}">
+                        {{ comment|children_count }} {% trans "hidden replies" %}
+                    </a>
+                {% else %}
+                    {{ comment|children_count }} {% trans "replies" %}
+                {% endifequal %} |{% endif %}
+                 <a class="comment_post_new" href="#post_new_comment">
+                    {% trans "Post a new comment" %}
+                </a> |
+                <a class="comment_reply" href="{% url comment_reply comment.pk %}">
+                    {% trans "Reply to this comment" %}
+                </a>
+            </p>
+        </div>
     </div>
 </div>
