@@ -3,13 +3,12 @@
 {% for comment, tree in comments|tree_info %}
 
 {% if not tree.new_level %}</div>{% endif %}
-
 <div class="comment_level_{{ comment.level }}
         {% if comment.level > collapse_levels_above %} comment_collapsed{% endif %}
         " id="comment_{{ comment.pk }}">
 
-    <div>{% show_gravatar comment.user.email %}</div>
-    <div class="comment">
+    <div style="float:left;width:5%">{% show_gravatar comment.user.email %}</div>
+    <div style="float:right;width:90%" class="comment">
 
             <p class="comment_title"><a class="comment_expand" href="{% url comment_detail comment.pk %}">{{ comment.title }}</a>-
                 {{ comment.name }}
@@ -44,9 +43,9 @@
 
     {% if forloop.parentloop.last %}
         {# not the topmost tree, skip closing some levels #}         
-        {% if level > bottom_level %}</div>{% endif %}
+        {% if level > bottom_level %}</div><br style="clear:both;" />{% endif %}
     {% else %}
-        </div>
+        </div><br style="clear:both;" />
     {% endif %}
 
 {% endfor %}
