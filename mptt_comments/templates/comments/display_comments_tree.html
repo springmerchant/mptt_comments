@@ -7,7 +7,7 @@
         {% if comment.level > collapse_levels_above %} comment_collapsed{% endif %}
         " id="comment_{{ comment.pk }}">
 
-    <div>
+    <div style="margin-top:10px;">
         <div style="float:left;width:5%">{% show_gravatar comment.user.email %}</div>
         <div style="float:right;width:90%" class="comment">
 
