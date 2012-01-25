@@ -7,45 +7,48 @@
         {% if comment.level > collapse_levels_above %} comment_collapsed{% endif %}
         " id="comment_{{ comment.pk }}">
 
-    <div style="float:left;width:5%">{% show_gravatar comment.user.email %}</div>
-    <div style="float:right;width:90%" class="comment">
+    <div>
+        <div style="float:left;width:5%">{% show_gravatar comment.user.email %}</div>
+        <div style="float:right;width:90%" class="comment">
 
-            <p class="comment_title"><a class="comment_expand" href="{% url comment_detail comment.pk %}">{{ comment.title }}</a>-
-                {{ comment.name }}
-                <span class="commented_day">{{ comment.submit_date|date:"l" }}</span>,
-                <span class="commented_date">{{ comment.submit_date|date:"j F" }}</span>
-                {% trans "at" %} <span class="commented_time">{{ comment.submit_date|date:"H:i" }}<span>
+                <p class="comment_title"><a class="comment_expand" href="{% url comment_detail comment.pk %}">{{ comment.title }}</a>-
+                    {{ comment.name }}
+                    <span class="commented_day">{{ comment.submit_date|date:"l" }}</span>,
+                    <span class="commented_date">{{ comment.submit_date|date:"j F" }}</span>
+                    {% trans "at" %} <span class="commented_time">{{ comment.submit_date|date:"H:i" }}<span>
+                </p>
+
+            <div class="comment_content {% if comment.level < collapse_levels_below %} comment_collapsed_below{% endif %}">
+            {{ comment.comment|markdown }}
+
+             <p>
+                {% if comment|children_count %}{% if comment.level == cutoff_level %}
+                    <a class="comment_replies" href="{% url comments_subtree comment.pk %}">
+                        {{ comment|children_count }} {% trans "hidden replies" %}
+                    </a>
+                {% else %}
+                    {{ comment|children_count }} {% trans "replies" %}
+                {% endif %} |{% endif %}
+                 <a class="comment_post_new" href="#post_new_comment">
+                    {% trans "Post a new comment" %}
+                </a> |
+                <a class="comment_reply" href="{% url comment_reply comment.pk %}">
+                    {% trans "Reply to this comment" %}
+                </a>
             </p>
 
-        <div class="comment_content {% if comment.level < collapse_levels_below %} comment_collapsed_below{% endif %}">
-        {{ comment.comment|markdown }}
-
-         <p>
-            {% if comment|children_count %}{% if comment.level == cutoff_level %}
-                <a class="comment_replies" href="{% url comments_subtree comment.pk %}">
-                    {{ comment|children_count }} {% trans "hidden replies" %}
-                </a>
-            {% else %}
-                {{ comment|children_count }} {% trans "replies" %}
-            {% endif %} |{% endif %}
-             <a class="comment_post_new" href="#post_new_comment">
-                {% trans "Post a new comment" %}
-            </a> |
-            <a class="comment_reply" href="{% url comment_reply comment.pk %}">
-                {% trans "Reply to this comment" %}
-            </a>
-        </p>
-
+            </div>
         </div>
     </div>
+    <br style="clear:both;" />
 
 {% for level in tree.closed_levels %}
 
     {% if forloop.parentloop.last %}
         {# not the topmost tree, skip closing some levels #}         
-        {% if level > bottom_level %}</div><br style="clear:both;" />{% endif %}
+        {% if level > bottom_level %}</div>{% endif %}
     {% else %}
-        </div><br style="clear:both;" />
+        </div>
     {% endif %}
 
 {% endfor %}
