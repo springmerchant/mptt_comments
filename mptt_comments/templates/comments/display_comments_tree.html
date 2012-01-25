@@ -1,4 +1,4 @@
-{% load i18n mptt_tags mptt_comments_tags comparison markup clepsidra_tags %}
+{% load i18n mptt_tags mptt_comments_tags markup clepsidra_tags %}
 
 {% for comment, tree in comments|tree_info %}
 
@@ -9,7 +9,7 @@
         " id="comment_{{ comment.pk }}">
 
     <div>{% show_gravatar comment.user.email %}</div>
-    <div class="comment">
+    <div>
 
             <p class="comment_title"><a class="comment_expand" href="{% url comment_detail comment.pk %}">{{ comment.title }}</a>-
                 {{ comment.name }}
@@ -18,17 +18,17 @@
                 {% trans "at" %} <span class="commented_time">{{ comment.submit_date|date:"H:i" }}<span>
             </p>
 
-        <div class="comment_content {% if_less comment.level collapse_levels_below %} comment_collapsed_below{% endif_less %}">
+        <div class="comment_content {% if comment.level < collapse_levels_below %} comment_collapsed_below{% endif %}">
         {{ comment.comment|markdown }}
 
          <p>
-            {% if comment|children_count %}{% ifequal comment.level cutoff_level %}
+            {% if comment|children_count %}{% if comment.level == cutoff_level %}
                 <a class="comment_replies" href="{% url comments_subtree comment.pk %}">
                     {{ comment|children_count }} {% trans "hidden replies" %}
                 </a>
             {% else %}
                 {{ comment|children_count }} {% trans "replies" %}
-            {% endifequal %} |{% endif %}
+            {% endif %} |{% endif %}
              <a class="comment_post_new" href="#post_new_comment">
                 {% trans "Post a new comment" %}
             </a> |
@@ -44,7 +44,7 @@
 
     {% if forloop.parentloop.last %}
         {# not the topmost tree, skip closing some levels #}         
-        {% if_greater level bottom_level %}</div>{% endif_greater %}
+        {% if level > bottom_level %}</div>{% endif %}
     {% else %}
         </div>
     {% endif %}
