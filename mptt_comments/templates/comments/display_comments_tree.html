@@ -4,12 +4,12 @@
 
 {% if not tree.new_level %}</div>{% endif %}
 
-<div class="comment comment_level_{{ comment.level }}
+<div class="comment_level_{{ comment.level }}
         {% if comment.level > collapse_levels_above %} comment_collapsed{% endif %}
         " id="comment_{{ comment.pk }}">
 
     <div>{% show_gravatar comment.user.email %}</div>
-    <div>
+    <div class="comment">
 
             <p class="comment_title"><a class="comment_expand" href="{% url comment_detail comment.pk %}">{{ comment.title }}</a>-
                 {{ comment.name }}
