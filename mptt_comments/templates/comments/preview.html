@@ -3,13 +3,13 @@
 
 {% block content %}
 
-    {% load comments i18n %}
+    {% load comments i18n markup %}
 
     <h1>{% trans "Preview of your comment" %}</h1>
     
 
     {% if comment %}
-        {{ comment }}
+        {{ comment|markdown }}
     {% endif %}
     
     <form action="{% comment_form_target %}" method="POST">
