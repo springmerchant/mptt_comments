@@ -14,7 +14,7 @@ from mptt_comments.models import MpttComment
 class MpttCommentForm(CommentForm):
     title = forms.CharField(max_length=255, label=_('Title'))
     parent_pk = forms.IntegerField(widget=forms.HiddenInput, required=False)
-    comment = forms.CharField(widget=forms.Textarea(attrs={'cols':'5'}))    
+    comment = forms.CharField(widget=forms.Textarea(attrs={'rows':'5'}))    
     def __init__(self, target_object, parent_comment=None, data=None, initial=None):
         self.parent_comment = parent_comment
         super(MpttCommentForm, self).__init__(target_object, data=data, initial=initial)
